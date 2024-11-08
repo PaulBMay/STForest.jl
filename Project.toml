@@ -1,0 +1,13 @@
+name = "STForest"
+uuid = "75b09500-11b7-4663-b443-a89488dfac32"
+authors = ["Paul B May"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.6.7"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
