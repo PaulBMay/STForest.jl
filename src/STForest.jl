@@ -10,6 +10,7 @@ using DataFrames, CSV
 using PolyaGammaSamplers
 using ProgressBars
 using Optim
+using Plots
 
 ########################
 # Structures
@@ -67,6 +68,18 @@ export NNGP_ZIST
 export NNGP_ZIST_yMAP
 export getPropVars
 export getLastSamp
+
+#########################
+
+include("bernoulli_model.jl")
+
+export NNGP_Bernoulli
+
+###############
+
+include("bernoulli_simulate.jl")
+
+export simulate_Bernoulli
 
 #########################
 
