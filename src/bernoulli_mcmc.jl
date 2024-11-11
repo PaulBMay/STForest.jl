@@ -1,4 +1,4 @@
-function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, spriors::NamedTuple, mcmc::NamedTuple, outDir::String, nSamps::Int64)
+function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, spriors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64)
 
     ###################
     # Check to see if the Tuples have the required fields
@@ -14,11 +14,7 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, sprio
     if !gtg
         error("bad 'spriors': The expected fields are 'theta0, alpha0'.") 
     end
-    # spriors
-    gtg = haskey(mcmc, :thetaVar)
-    if !gtg
-        error("bad 'mcmc': The expected fields are 'thetaVar'.") 
-    end
+
 
 
     ############################
@@ -97,7 +93,7 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, sprio
     propTheta = copy(currentTheta)
     acceptTheta = 0
 
-    prop_chol = cholesky(mcmc.thetaVar).L
+    prop_chol = cholesky(thetaVar).L
 
     #########################
     # Begin Gibbs sampler

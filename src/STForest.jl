@@ -16,12 +16,14 @@ using Plots
 # Structures
 #########################
 
-struct InputData
-    y::Vector{Number}
+struct InputData{T}
+    y::Vector{T}
     X::Matrix{Float64}
     loc::Matrix{Float64}
     time::Matrix{Float64}
 end
+
+export InputData
 
 #= struct SpatialParams
     m::Int64
@@ -47,6 +49,8 @@ end =#
 include("misc.jl")
 export quiltplot
 export datasplit
+export getPropVars
+export getLastSamp
 
 #######################
 

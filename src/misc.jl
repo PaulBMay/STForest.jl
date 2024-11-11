@@ -31,30 +31,28 @@ function datasplit(data::InputData)
 
 end
 
-function getPropVars(path::String, add::Float64, nUse::Integer)
+function getPropVars(path::String, vars::Vector{String}, nUse::Integer)
 
     p = CSV.read(path, DataFrame)
     nSamps = size(p,1)
-    
+
     use = (nSamps - nUse + 1):nSamps
 
-    thetay = log.(hcat(p.swy1[use], p.rangeSy1[use], p.rangeTy1[use], p.swy2[use], p.rangeTy2[use], p.t2y[use]))
-    thetayVar = (2.4^2/6)*cov(thetay) + add*I(6)
+    pvars = Matrix( p[use, Symbol.(vars)] )
+    
+    thetaVar = (2.4^2 / size(pvars, 2))*cov( log.(pvars) ) 
 
-    thetaz = log.(hcat(p.swz[use], p.rangeSz[use]))
-    thetazVar = (2.4^2/3)*cov(thetaz) + add*I(2)
-
-    return thetayVar, thetazVar
+    return thetaVar
 
 end
 
-function getLastSamp(path::String)
+function getLastSamp(path::String, vars::Vector{String})
 
     p = CSV.read(path, DataFrame)
 
     last = size(p,1)
 
-    lastSamp = (swy1 = p.swy1[last], rangeSy1 = p.rangeSy1[last], rangeTy1 = p.rangeTy1[last], swy2 = p.swy2[last], rangeTy2 = p.rangeTy2[last], t2y = p.t2y[last], swz = p.swz[last], rangeSz = p.rangeSz[last])
+    lastSamp = NamedTuple(p[last, Symbol.(vars)])
 
     return lastSamp
 

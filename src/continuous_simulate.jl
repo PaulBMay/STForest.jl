@@ -17,6 +17,9 @@ function simulate_Continuous(loc::Matrix, time::Matrix, nKnots::Int, params::Nam
     local locUnq = unique(loc, dims = 1)
     local nUnq = size(locUnq, 1)
 
+    # For each location in the full stack, what's it's position among the set of unique locations?
+    map2unq = indexin(loc2str(loc), loc2str(locUnq))
+
     if nUnq < n
 
         local timeStep = (maximum(time) - minimum(time)) / (nKnots - 1)
@@ -24,7 +27,7 @@ function simulate_Continuous(loc::Matrix, time::Matrix, nKnots::Int, params::Nam
 
         local Q2 = expCor(timeKnots, timeKnots, params.rangeT2)
         local w2 = vec( cholesky(Q2).U \ randn(nKnots, nUnq))
-        local B2Rows, B2Cols, B2Order = getBtNZ(time, map2unq, nKnots)
+        local B2Rows, B2Cols, B2Order = getBtNZ(n, map2unq, nKnots)
         local B2Compact = expCor(time, timeKnots, params.rangeT2)
         local B2 = sparse(B2Rows, B2Cols, view(vec(B2Compact'), B2Order))
 
@@ -32,6 +35,7 @@ function simulate_Continuous(loc::Matrix, time::Matrix, nKnots::Int, params::Nam
 
     else
         eta2 = params.sw2*randn(n)
+        @warn "No unique locations... Are you sure this is what you want?"
     end
 
     local y = params.beta .+ w1 + eta2 + sqrt(params.tSq)*randn(n)

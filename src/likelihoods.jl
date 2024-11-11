@@ -1,6 +1,6 @@
 
 # PC prior for exponential covariance (par = [sigma, range])
-function pcprior(par::Vector{Float64}, par0::Vector{Float64}, alpha::Vector{Float64})
+function pcprior(par::Vector{Float64}, par0::Vector, alpha::Vector{Float64})
 
     sig, rho = par
     sig0, rho0 = par0
@@ -17,7 +17,7 @@ function pcprior(par::Vector{Float64}, par0::Vector{Float64}, alpha::Vector{Floa
 end
 
 # PC prior for separable ST exponential covariance (par = [sigma, range_space, range_time])
-function pcpriorST(par::Vector{Float64}, par0::Vector{Float64}, alpha::Vector{Float64})
+function pcpriorST(par::Vector{Float64}, par0::Vector, alpha::Vector{Float64})
 
     sig, rho, rhot = par
     sig0, rho0, rhot0 = par0
@@ -69,8 +69,8 @@ function thetayNLP(thetay::Vector, spriors::NamedTuple, data::InputData, timeKno
 
     local nll = 0.5*(sse + ldet)
 
-    local prior1 = pcpriorST([swy1, rangeSy1, rangeTy1], spriors.thetay10, spriors.alphay10)
-    local prior2 = pcprior([swy2, rangeTy2], spriors.thetay20, spriors.alphay20)
+    local prior1 = pcpriorST([swy1, rangeSy1, rangeTy1], spriors.theta10, spriors.alpha10)
+    local prior2 = pcprior([swy2, rangeTy2], spriors.theta20, spriors.alpha20)
 
     local nlp = nll - prior1 - prior2
 
@@ -80,7 +80,7 @@ function thetayNLP(thetay::Vector, spriors::NamedTuple, data::InputData, timeKno
 end
 
 # Evaluate the NNGP prior log density, up to an additive constant.
-function wll(B::SparseMatrixCSC, F::Vector{Float64}, s2::Number, w::AbstractArray{Float64,1})
+function wll(B::SparseMatrixCSC, F::Vector{Float64}, s2::Real, w::AbstractArray{Float64,1})
     local n = length(w)
     local ll = -0.5*(
         norm(Diagonal(1 ./ sqrt.(F))*B*w)^2/s2 +
@@ -113,8 +113,8 @@ function thetayLP(thetay::Vector, spriors::NamedTuple, yp::Vector,  betayprec::V
 
     local ll = -0.5*(sse + ldet)
 
-    local prior1 = pcpriorST([swy1, rangeSy1, rangeTy1], spriors.thetay10, spriors.alphay10)
-    local prior2 = pcprior([swy2, rangeTy2], spriors.thetay20, spriors.alphay20)
+    local prior1 = pcpriorST([swy1, rangeSy1, rangeTy1], spriors.theta10, spriors.alpha10)
+    local prior2 = pcprior([swy2, rangeTy2], spriors.theta20, spriors.alpha20)
 
     local lp = ll + prior1 + prior2
 
