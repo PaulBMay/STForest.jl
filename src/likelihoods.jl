@@ -35,7 +35,7 @@ function pcpriorST(par::Vector{Float64}, par0::Vector{Float64}, alpha::Vector{Fl
 end
 
 # Objective function for the MAP. Using the log parametrization.
-function thetayNLP(thetay::Vector, spriors::SpatialPriors, data::InputData, timeKnots::Matrix, betayprec::Vector, nby::Matrix, By::SparseMatrixCSC, Fy::Vector, ByOrder::Vector, Bt::SparseMatrixCSC, BtCompact::Matrix, BtOrder::Vector, Qt::Matrix, QyPostChol::SparseArrays.CHOLMOD.Factor)
+function thetayNLP(thetay::Vector, spriors::NamedTuple, data::InputData, timeKnots::Matrix, betayprec::Vector, nby::Matrix, By::SparseMatrixCSC, Fy::Vector, ByOrder::Vector, Bt::SparseMatrixCSC, BtCompact::Matrix, BtOrder::Vector, Qt::Matrix, QyPostChol::SparseArrays.CHOLMOD.Factor)
 
     local swy1, rangeSy1, rangeTy1, swy2, rangeTy2, t2y = exp.(thetay)
 
@@ -92,7 +92,7 @@ end
 
 # Evaluate the log posterior for the y spatial parameters. 
 # Pretty much the negative return of thetayNLP(), but assumes that the cholesky of the posterior precision 'QyPostChol' has already been computed in the outer scope, which it has in my MCMC code, NNGP_ZIST(). 
-function thetayLP(thetay::Vector, spriors::SpatialPriors, yp::Vector,  betayprec::Vector, Fy::Vector, Qt::Matrix, Dsgny::SparseMatrixCSC, QyPostChol::SparseArrays.CHOLMOD.Factor)
+function thetayLP(thetay::Vector, spriors::NamedTuple, yp::Vector,  betayprec::Vector, Fy::Vector, Qt::Matrix, Dsgny::SparseMatrixCSC, QyPostChol::SparseArrays.CHOLMOD.Factor)
 
     local swy1, rangeSy1, rangeTy1, swy2, rangeTy2, t2y = exp.(thetay)
 

@@ -1,4 +1,25 @@
-function NNGP_Bernoulli(data::NamedTuple, m::Int64, initparams::NamedTuple, spriors::NamedTuple, mcmc::NamedTuple, outDir::String, nSamps::Int64)
+function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, spriors::NamedTuple, mcmc::NamedTuple, outDir::String, nSamps::Int64)
+
+    ###################
+    # Check to see if the Tuples have the required fields
+    ####################
+
+    # params
+    gtg = haskey(initparams, :sw) & haskey(initparams, :rangeS) & haskey(initparams, :rangeT)
+    if !gtg
+        error("bad 'initparams': The expected fields are 'sw, rangeS, rangeT'.") 
+    end
+    # spriors
+    gtg = haskey(spriors, :theta0) & haskey(spriors, :alpha0)
+    if !gtg
+        error("bad 'spriors': The expected fields are 'theta0, alpha0'.") 
+    end
+    # spriors
+    gtg = haskey(mcmc, :thetaVar)
+    if !gtg
+        error("bad 'mcmc': The expected fields are 'thetaVar'.") 
+    end
+
 
     ############################
     # Data dimensions and prep
@@ -15,7 +36,7 @@ function NNGP_Bernoulli(data::NamedTuple, m::Int64, initparams::NamedTuple, spri
 
     # Prepare CSV's
 
-    loctimeOut = joinpath(outDir, "loctime.csv")
+    loctimeOut = joinpath(outDir, "locTime.csv")
     CSV.write(loctimeOut, DataFrame(lon = data.loc[:,1], lat = data.loc[:,2], time = data.time[:,1]))
 
     paramsOut = joinpath(outDir, "zparams.csv")

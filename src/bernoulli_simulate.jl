@@ -1,5 +1,10 @@
 function simulate_Bernoulli(loc::Matrix, time::Matrix, params::NamedTuple, m)
 
+    gtg = haskey(params, :sw) & haskey(params, :rangeS) & haskey(params, :rangeT)
+    if !gtg
+        error("bad 'params': The expected fields are 'sw, rangeS, rangeT'.") 
+    end
+
     local n = size(loc, 1) 
     local nb = getNeighbors(loc, m)
 
