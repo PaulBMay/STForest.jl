@@ -149,7 +149,7 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, prior
        ll = wll(B, F, sw^2, w)
 
        priorProp = pcpriorST([swp, rangeSp, rangeTp], priors.theta0, priors.alpha0)
-       prior = pcprior([sw, rangeS, rangeT], priors.theta0, priors.alpha0)
+       prior = pcpriorST([sw, rangeS, rangeT], priors.theta0, priors.alpha0)
 
        acceptProb = exp.(llProp + priorProp + sum(propTheta) - ll - prior - sum(currentTheta))
 

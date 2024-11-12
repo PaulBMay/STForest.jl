@@ -85,7 +85,7 @@ plot(pardf_pos.tSq)
 
 thetaVar_z = 1e-3*Matrix(I,3,3)
 
-NNGP_Bernoulli(zdata, m, zparams, priors_z, thetaVar_z, outDir, nSampsBurn)
+NNGP_Bernoulli(zdata, m, zparams, priors_z, thetaVar_z, outDir, nSampsBurn, thetalog = true)
 
 
 thetaVar_z = getPropVars("./test/dump/zparams.csv", ["sw", "rangeS", "rangeT"], nSampsBurn)
