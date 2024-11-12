@@ -49,8 +49,8 @@ end
 
 #
 
-spriors_pos = (theta10 = [1, 0.1, 1], alpha10 = [0.5, 0.5, 0.5], theta20 = [1, 1], alpha20 = [0.5, 0.5])
-spriors_z = (theta0 = [1, 0.1, 1], alpha0 = [0.5, 0.5, 0.5])
+priors_pos = (theta10 = [1, 0.1, 1], alpha10 = [0.5, 0.5, 0.5], theta20 = [1, 1], alpha20 = [0.5, 0.5])
+priors_z = (theta0 = [1, 0.1, 1], alpha0 = [0.5, 0.5, 0.5], beta = [2 20])
 
 timeKnots = reshape( collect(0:0.1:1), :, 1)
 
@@ -85,17 +85,18 @@ plot(pardf_pos.tSq)
 
 thetaVar_z = 1e-3*Matrix(I,3,3)
 
-NNGP_Bernoulli(zdata, m, zparams, spriors_z, thetaVar_z, outDir, nSampsBurn)
+NNGP_Bernoulli(zdata, m, zparams, priors_z, thetaVar_z, outDir, nSampsBurn)
 
 
 thetaVar_z = getPropVars("./test/dump/zparams.csv", ["sw", "rangeS", "rangeT"], nSampsBurn)
 
-NNGP_Bernoulli(zdata, m, zparams, spriors_z, thetaVar_z, outDir, nSamps)
+NNGP_Bernoulli(zdata, m, zparams, priors_z, thetaVar_z, outDir, nSamps)
 
 pardf_z= CSV.read("./test/dump/zparams.csv", DataFrame)
 
-#= plot(pardf_z.sw)
+plot(pardf_z.sw)
 plot(pardf_z.rangeS)
-plot(pardf_z.rangeT) =#
+plot(pardf_z.rangeT)
+plot(pardf_z.beta_0)
 
 rm(outDir, recursive = true)

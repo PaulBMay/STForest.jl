@@ -1,4 +1,4 @@
-function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, spriors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64)
+function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, priors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64)
 
     ###################
     # Check to see if the Tuples have the required fields
@@ -9,10 +9,10 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, sprio
     if !gtg
         error("bad 'initparams': The expected fields are 'sw, rangeS, rangeT'.") 
     end
-    # spriors
-    gtg = haskey(spriors, :theta0) & haskey(spriors, :alpha0)
+    # priors
+    gtg = haskey(priors, :theta0) & haskey(priors, :alpha0) & haskey(priors, :beta)
     if !gtg
-        error("bad 'spriors': The expected fields are 'theta0, alpha0'.") 
+        error("bad 'priors': The expected fields are 'theta0, alpha0'.") 
     end
 
 
@@ -23,6 +23,11 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, sprio
 
     n = size(data.y, 1) # sample size
     p = size(data.X, 2) # num predictors
+
+    size(priors.beta,1) == p || error("nrows of priors.beta does not match ncols of X")
+
+    betaMu = priors.beta[:,1]
+    betaPrec = priors.beta[:,2]
 
     # Does the out_dir exist?
 
@@ -75,9 +80,11 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, sprio
 
     zProj = Dsgn'*(data.y .- 0.5)
 
+    zProj[1:p] += betaPrec .* betaMu
+
     pg = rpg.(fill(0.3, n))
 
-    betaPrec = fill(0.5, p)
+
 
 
     ##############
@@ -112,9 +119,6 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, sprio
 
        effects .= getGaussSamp!(Qc, Q, zProj)
 
-       beta .= effects[1:p]
-       w .= effects[(p+1):(p+n)]
-
        #######################
        # Sample pg
        #######################
@@ -134,8 +138,8 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, sprio
        llProp = wll(Bp, Fp, swp^2, w)
        ll = wll(B, F, sw^2, w)
 
-       priorProp = pcpriorST([swp, rangeSp, rangeTp], spriors.theta0, spriors.alpha0)
-       prior = pcprior([sw, rangeS, rangeT], spriors.theta0, spriors.alpha0)
+       priorProp = pcpriorST([swp, rangeSp, rangeTp], priors.theta0, priors.alpha0)
+       prior = pcprior([sw, rangeS, rangeT], priors.theta0, priors.alpha0)
 
        acceptProb = exp.(llProp + priorProp + sum(propTheta) - ll - prior - sum(currentTheta))
 
