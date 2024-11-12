@@ -1,4 +1,4 @@
-function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, priors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64)
+function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, priors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64; thetalog = false)
 
     ###################
     # Check to see if the Tuples have the required fields
@@ -61,6 +61,16 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, prior
 
     CSV.write(paramsOut, paramsDf)
     CSV.write(wOut, wDf)
+
+    if thetalog
+
+        thetalogdf = DataFrame(zeros(12)', ["sw", "rangeS", "rangeT", "ll", "prior", "swp", "rangeSp", "rangeTp", "llp", "priorp", "acceptprob", "accept"])
+        thetalogdf.accept .= false
+
+        thetalogout = joinpath(outDir, "zthetalog.csv")
+        CSV.write(thetalogout, thetalogdf)
+
+    end
 
     ####################
     # Lord have mercy that was boring.
@@ -145,6 +155,10 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, prior
 
        acceptTheta = rand(1)[1] < acceptProb
 
+       if thetalog
+        thetalogdf[1,:] = [sw, rangeS, rangeT, ll, prior, swp, rangeSp, rangeTp, llProp, priorProp, acceptProb, acceptTheta]
+       end
+
        if acceptTheta
             sw, rangeS, rangeT = swp, rangeSp, rangeTp
             currentTheta .= copy(propTheta)
@@ -163,6 +177,10 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, prior
 
        CSV.write(paramsOut, paramsDf; append = true, header = false)
        CSV.write(wOut, wDf; append = true, header = false)
+       if thetalog
+        CSV.write(thetalogout, thetalogdf; append = true, header = false)
+       end
+
 
 
 
