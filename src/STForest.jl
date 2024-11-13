@@ -107,8 +107,15 @@ export NNGP_Continuous_MCMC
 include("continuous_simulate.jl")
 export simulate_Continuous
 
-include("prediction.jl")
-export NNGP_ZIST_PRED
+#######################
+
+#include("prediction.jl")
+#export NNGP_ZIST_PRED
+
+########################
+
+include("bernoulli_predict.jl")
+export bernoulli_predict
 
 
 
