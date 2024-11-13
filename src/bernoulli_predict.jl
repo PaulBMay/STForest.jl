@@ -29,7 +29,7 @@ function bernoulli_predict(readdir, Xpred, locpred, timepred, m)
     print("Getting initial NNGP mats...\n")
     B, F, BOrder = getNNGPmatsSTP(nb, loc, time, locpred, timepred, rangeS[1], rangeT[1])
 
-    predSamps = zeros(Int64, nSamps, nProj)
+    predSamps = zeros(Int64, nSamps, npred)
 
     ###############
     # Compute mean and variance iteratively
