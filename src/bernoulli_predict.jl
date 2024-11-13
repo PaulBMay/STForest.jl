@@ -2,7 +2,7 @@ function bernoulli_predict(readdir, Xpred, locpred, timepred, m)
 
     npred = size(locpred,1)
 
-    params = CSV.read(joinpath(read_dir, "zparams.csv"), DataFrame)
+    params = CSV.read(joinpath(readdir, "zparams.csv"), DataFrame)
 
     sw = params.sw
     rangeS = params.rangeS
@@ -13,9 +13,9 @@ function bernoulli_predict(readdir, Xpred, locpred, timepred, m)
     p = size(beta,2)
     p == size(Xpred, 2) || error("Read coeffecients of different dims than provided XPred")
     
-    w = CSV.read(joinpath(read_dir, "wz.csv"), Tables.matrix)
+    w = CSV.read(joinpath(readdir, "wz.csv"), Tables.matrix)
 
-    loctime = CSV.read(joinpath(read_dir, "locTime.csv"), Tables.matrix)
+    loctime = CSV.read(joinpath(readdir, "locTime.csv"), Tables.matrix)
     loc = loctime[:,1:2]
     time = loctime[:,[3]]
 
