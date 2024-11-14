@@ -183,7 +183,7 @@ function NNGP_Bernoulli2(data::InputData, m::Int64, initparams::NamedTuple, prio
        end
 
        if acceptTheta
-            sw1, rangeS1, rangeT1, sw1, rangeS2 = sw1p, rangeS1p, rangeT1p, sw2p, rangeS2p
+            sw1, rangeS1, rangeT1, sw2, rangeS2 = sw1p, rangeS1p, rangeT1p, sw2p, rangeS2p
             currentTheta .= copy(propTheta)
             B1.nzval .= B1p.nzval
             F1 .= F1p
