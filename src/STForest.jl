@@ -85,6 +85,11 @@ export NNGP_Bernoulli
 
 ###############
 
+include("bernoulli2_mcmc.jl")
+export NNGP_Bernoulli2
+
+###############
+
 include("bernoulli_simulate.jl")
 export simulate_Bernoulli
 

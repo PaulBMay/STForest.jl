@@ -1,4 +1,4 @@
-function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, priors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64; thetalog = false)
+function NNGP_Bernoulli2(data::InputData, m::Int64, initparams::NamedTuple, priors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64; thetalog = false)
 
     ###################
     # Check to see if the Tuples have the required fields
