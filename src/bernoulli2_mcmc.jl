@@ -31,7 +31,7 @@ function NNGP_Bernoulli2(data::InputData, m::Int64, initparams::NamedTuple, prio
 
     locUnq = unique(data.loc, dims = 1)
     nUnq = size(locUnq, 1)
-    map2unq = match(loc2str(data.loc), loc2str(locUnq))
+    map2unq = indexin(loc2str(data.loc), loc2str(locUnq))
 
     P = sparse(1:n, map2unq, 1)
 
