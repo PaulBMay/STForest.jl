@@ -171,8 +171,8 @@ function NNGP_Bernoulli2(data::InputData, m::Int64, initparams::NamedTuple, prio
        llProp = wll(B1p, F1p, sw1p^2, w1) + wll(B2p, F2p, sw2p^2, w2)
        ll = wll(B1, F1, sw1^2, w1) + wll(B2, F2, sw2^2, w2)
 
-       priorProp = pcpriorST([sw1p, rangeS1p, rangeT1p], priors.theta10, priors.alpha10) + pcpriorS([sw2p, rangeS2p], priors.theta20, priors.alpha20)
-       prior = pcpriorST([sw1, rangeS1, rangeT1], priors.theta10, priors.alpha10) + pcpriorS([sw2, rangeS2], priors.theta20, priors.alpha20)
+       priorProp = pcpriorST([sw1p, rangeS1p, rangeT1p], priors.theta10, priors.alpha10) + pcprior([sw2p, rangeS2p], priors.theta20, priors.alpha20)
+       prior = pcpriorST([sw1, rangeS1, rangeT1], priors.theta10, priors.alpha10) + pcprior([sw2, rangeS2], priors.theta20, priors.alpha20)
 
        acceptProb = exp.(llProp + priorProp + sum(propTheta) - ll - prior - sum(currentTheta))
 
