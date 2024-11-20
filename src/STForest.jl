@@ -95,6 +95,11 @@ export simulate_Bernoulli
 
 #########################
 
+include("bernoulli_simulate2.jl")
+export simulate_Bernoulli2
+
+#########################
+
 include("independent_timeseries.jl")
 
 #########################

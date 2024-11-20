@@ -103,7 +103,7 @@ function NNGP_Bernoulli2(data::InputData, m::Int64, initparams::NamedTuple, prio
     B1,F1,B1Order = getNNGPmatsST(nb1, data.loc, data.time, rangeS1, rangeT1)
     B1p,F1p = copy(B1), copy(F1)
 
-    B2,F2,B2Order = getNNGPmatsS(nb1, locUnq, rangeS2)
+    B2,F2,B2Order = getNNGPmatsS(nb2, locUnq, rangeS2)
     B2p,F2p = copy(B2), copy(F2)
 
     Dsgn = sparse_hcat(data.X, speye(n), P)
@@ -185,10 +185,10 @@ function NNGP_Bernoulli2(data::InputData, m::Int64, initparams::NamedTuple, prio
        if acceptTheta
             sw1, rangeS1, rangeT1, sw2, rangeS2 = sw1p, rangeS1p, rangeT1p, sw2p, rangeS2p
             currentTheta .= copy(propTheta)
-            B1.nzval .= B1p.nzval
-            F1 .= F1p
-            B2.nzval .= B2p.nzval
-            F2 .= F2p
+            B1.nzval .= copy(B1p.nzval)
+            F1 .= copy(F1p)
+            B2.nzval .= copy(B2p.nzval)
+            F2 .= copy(F2p)
        end
 
 
