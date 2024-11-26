@@ -8,7 +8,7 @@ using Distributions
 
 #
 
-n = 2000
+n = 5000
 nUnq = Integer(floor(n / 4))
 
 Random.seed!(96)
@@ -20,7 +20,7 @@ time = rand(n,1)
 #
 
 posparams = (beta = 5, sw1 = 1, rangeS1 = 0.2, rangeT1 = 1, sw2 = 2, rangeT2 = 0.5, tSq = 0.01)
-zparams = (beta = 2, sw1 = 4, rangeS1 = 0.3, rangeT1 = 2, sw2 = 10, rangeS2 = 0.1)
+zparams = (beta = 2, sw1 = 4, rangeS1 = 0.3, rangeT1 = 1, sw2 = 10, rangeS2 = 0.1)
 
 m = 25
 
@@ -51,12 +51,14 @@ priors_z = (theta10 = [1, 0.1, 1], alpha10 = [0.5, 0.5, 0.5], theta20 = [5, 0.1]
 
 thetaVar_z = 1e-3*Matrix(I,5,5)
 
-nSampsBurn = 10000
+nSampsBurn = 1000
+nSamps = 5000
 
 NNGP_Bernoulli2(zdata, m, zparams, priors_z, thetaVar_z, outDir, nSampsBurn, thetalog = true)
 
-
 thetaVar_z = getPropVars("./test/dump/zparams.csv", ["sw1", "rangeS1", "rangeT1", "sw2", "rangeS2"], 1000)
+
+NNGP_Bernoulli2(zdata, m, zparams, priors_z, thetaVar_z, outDir, nSamps, thetalog = true)
 
 
 pardf_z= CSV.read("./test/dump/zparams.csv", DataFrame)
