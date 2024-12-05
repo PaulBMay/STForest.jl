@@ -101,97 +101,8 @@ function bernoullimap(theta::Vector, data::InputData, m::Integer, priors::NamedT
 end
 
 
-function thetaz_nlp_debug(theta::Vector, data::InputData, priors::NamedTuple, nb::Matrix{Int64}, tol::Float64, maxiter::Int64)
 
-    n = length(data.y)
-    p = size(data.X, 2)
-
-    sw,rangeS,rangeT = exp.(theta)
-
-    B,F,Border = getNNGPmatsST(nb, data.loc, data.time, rangeS, rangeT)
-
-    Q = blockdiag(spdiagm(priors.beta[:,2]), (1 / sw^2) * (B'*spdiagm(1 ./ F)*B))
-
-    Dsgn = sparse_hcat(data.X, speye(n))
-
-    neffects = size(Dsgn, 2)
-
-    ####################
-    # Newton Raphson to find posterior mode of the effects
-    ######################
-
-    effects = zeros(neffects)
-    update = copy(effects)
-    probs = softmax.(Dsgn*effects)
-    Omega = spdiagm(probs.*(1 .- probs))
-    Qp = Q + Dsgn'*Omega*Dsgn
-    Qpc = cholesky(Hermitian(Qp))
-    grad = Dsgn'*(data.y - probs) - Q*effects
-    grad[1:p] += priors.beta[:,1] .* priors.beta[:,2]
-    effects += (Qpc \ grad)
-
-    error = 2.0
-    count = 0
-
-    while (error > tol) && (count <= maxiter)
-
-        probs .= softmax.(Dsgn*effects)
-        Omega .= spdiagm(probs.*(1 .- probs))
-        Qp .= Q + Dsgn'*Omega*Dsgn
-        cholesky!(Qpc, Hermitian(Qp))
-        grad .= Dsgn'*(data.y - probs) - Q*effects
-        grad[1:p] += priors.beta[:,1] .* priors.beta[:,2]
-        update .= effects + (Qpc \ grad)
-        error = norm(effects - update) / norm(update)
-        effects .= copy(update)
-
-        #println(error)
-
-        count += 1
-
-    end
-
-    ##################
-    # Laplace approximation of the log posterior
-    ####################
-
-    # p(y | w, θ)
-
-    probs .= softmax.(Dsgn*effects)
-    pos = data.y .== 1
-    lly = sum(log.(probs[pos])) + sum(log.(1 .- probs[.!pos]))
-
-    # p(w | θ)
-
-    effects[1:p] -= priors.beta[:,1]
-
-    llw = -0.5*(effects'*Q*effects + sum(log.(F)) + 2*(neffects - p)*log(sw) - sum(log.(priors.beta[:,2])) + neffects*log(2*pi))
-
-    det1 = sum(log.(F)) + 2*(neffects - p)*log(sw) - sum(log.(priors.beta[:,2]))
-    println(det1)
-    det2 = -logdet(cholesky(Hermitian(Q)))
-    println(det2)
-
-    # p(w | y, θ)
-
-    #llwc = -0.5*(effects'*Qp*effects - logdet(Qpc) + neffects*log(2*pi))
-    llwc = -0.5*( -logdet(Qpc) + neffects*log(2*pi) )
-
-    # p(θ)
-
-    lprior = pcpriorST([sw, rangeS, rangeT], priors.theta0, priors.alpha0)
-
-    # p(θ | y)
-
-    lpost = lly + llw + lprior - llwc
-
-    return -lpost
-
-    
-
-end
-
-function thetaz_postmode(theta::Vector, data::InputData, priors::NamedTuple, nb::Matrix{Int64}, tol::Float64, maxiter::Int64)
+#= function thetaz_postmode(theta::Vector, data::InputData, priors::NamedTuple, nb::Matrix{Int64}, tol::Float64, maxiter::Int64)
 
     n = length(data.y)
     p = size(data.X, 2)
@@ -313,4 +224,4 @@ function thetaz_nlp_mcmc(theta::Vector, data::InputData, priors::NamedTuple, nb:
 
     
 
-end
+end =#
