@@ -23,7 +23,7 @@ time = rand(n,1)
 
 #
 
-zparams = (beta = 2, sw1 = 2, rangeS1 = 0.5, rangeT1 = 0.5, sw2 = 5, rangeS2 = 0.2)
+zparams = (beta = 2, sw1 = 5, rangeS1 = 0.5, rangeT1 = 0.5, sw2 = 5, rangeS2 = 0.2)
 
 m = 25
 
