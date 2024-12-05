@@ -16,5 +16,5 @@ function simulate_Bernoulli(loc::Matrix, time::Matrix, params::NamedTuple, m)
 
     local z = 1 .* (rand(n) .< zmu)
 
-    return z
+    return z, zmu
 end

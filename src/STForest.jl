@@ -80,6 +80,12 @@ export getLastSamp
  =#
 #########################
 
+include("bernoulli_map.jl")
+
+export bernoullimap
+
+##################
+
 include("bernoulli_mcmc.jl")
 export NNGP_Bernoulli
 
