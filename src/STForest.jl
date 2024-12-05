@@ -86,6 +86,12 @@ export bernoullimap
 
 ##################
 
+include("bernoulli2_map.jl")
+
+export bernoullimap2
+
+##################
+
 include("bernoulli_mcmc.jl")
 export NNGP_Bernoulli
 
