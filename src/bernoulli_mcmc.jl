@@ -304,7 +304,7 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, prior
 
     acceptTheta = 0
 
-    thetamat = zeros(nSamps, 3)
+    thetamat = zeros(nSamps+1, 3)
     thetamat[1,:] = log.([sw, rangeS, rangeT])
 
     thetaVar = 1e-5*Matrix(I,3,3)
@@ -337,7 +337,7 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, prior
        ###########################
 
        if i >= adaptStart
-        thetaVar = (2.4^2/3)*cov(thetamat[1:i,:])
+        thetaVar .= (2.4^2/3)*cov(thetamat[1:i,:])
        end
 
        currentTheta = thetamat[i,:]
