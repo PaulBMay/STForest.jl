@@ -89,7 +89,7 @@ NNGP_Bernoulli(zdata, m, zparams, priors_z, outDir, 10, adaptStart = 50, thetalo
 NNGP_Bernoulli(zdata, m, zparams, priors_z, outDir, nSampsBurn, adaptStart = 50, thetalog = true)
 
 NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, 10, adaptStart = 50, thetalog = true)
-NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, nSampsBurn, adaptStart = 50, thetalog = true)
+NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, nSampsBurn, adaptStart = 50, its_reltol = 1e-6, thetalog = true)
 
 
 thetaVar_z = getPropVars("./test/dump/zparams.csv", ["sw", "rangeS", "rangeT"], nSampsBurn)
@@ -104,3 +104,8 @@ plot(pardf_z.rangeT)
 plot(pardf_z.beta_0)
 
 rm(outDir, recursive = true)
+
+
+@profview NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, 50, adaptStart = 50, its_reltol = 1e-6, thetalog = true)
+
+

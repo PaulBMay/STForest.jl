@@ -409,11 +409,13 @@ function getGaussSampITS!(Q, Pl, zProj, B, F, Dsgn, betaPrec, sw, omega, reltol)
         spdiagm(betaPrec),
         (1/sw^2)*B'*spdiagm(1 ./ F)*B
     ) + Dsgn'*spdiagm(omega)*Dsgn
+
     UpdatePreconditioner!(Pl, Q)
 
     ztilde = copy(zProj)
     ztilde[1:p] += sqrt.(betaPrec) .* randn(p)
-    ztilde[(p+1):k] = sqrt.(1 ./ F) .* (B*randn(n))
+    ztilde[(p+1):k] += (1 / sw) *  ( B'*(sqrt.(1 ./ F) .* randn(n)) )
+    ztilde += Dsgn' * (sqrt.(omega) .* randn(n))
     
     prob = LinearProblem(Q, ztilde)
 
