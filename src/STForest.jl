@@ -12,6 +12,9 @@ using ProgressBars
 using Optim
 using Plots
 
+using LinearSolve
+using Preconditioners
+
 ########################
 # Structures
 #########################
@@ -94,6 +97,7 @@ export bernoullimap2
 
 include("bernoulli_mcmc.jl")
 export NNGP_Bernoulli
+export NNGP_Bernoulli_ITS
 
 ###############
 

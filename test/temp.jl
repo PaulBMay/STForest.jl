@@ -8,7 +8,7 @@ using Distributions
 
 #
 
-n = 1000
+n = 20000
 nUnq = Integer(floor(n / 4))
 
 Random.seed!(96)
@@ -26,7 +26,7 @@ m = 25
 
 #
 
-z = simulate_Bernoulli(loc, time, zparams, m)
+z, zmu = simulate_Bernoulli(loc, time, zparams, m)
 
 nKnots = 10
 ypos = simulate_Continuous(loc, time, nKnots, posparams, m)
@@ -85,7 +85,11 @@ plot(pardf_pos.tSq)
 
 thetaVar_z = 1e-3*Matrix(I,3,3)
 
-NNGP_Bernoulli(zdata, m, zparams, priors_z, thetaVar_z, outDir, nSampsBurn, thetalog = true)
+NNGP_Bernoulli(zdata, m, zparams, priors_z, outDir, 10, adaptStart = 50, thetalog = true)
+NNGP_Bernoulli(zdata, m, zparams, priors_z, outDir, nSampsBurn, adaptStart = 50, thetalog = true)
+
+NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, 10, adaptStart = 50, thetalog = true)
+NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, nSampsBurn, adaptStart = 50, thetalog = true)
 
 
 thetaVar_z = getPropVars("./test/dump/zparams.csv", ["sw", "rangeS", "rangeT"], nSampsBurn)
