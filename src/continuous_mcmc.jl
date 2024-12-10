@@ -149,7 +149,7 @@ function NNGP_Continuous_MCMC(data::InputData, m::Integer, timeKnots::Matrix, in
        # Sample beta, w1, w2
        ########################
 
-       effects = getGaussSamp(Qc, yProj)
+       effects .= getGaussSamp(Qc, yProj)
 
        ###########################
        # Sample all spatial parameters associated with y

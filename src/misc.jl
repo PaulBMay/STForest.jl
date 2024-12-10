@@ -57,3 +57,20 @@ function getLastSamp(path::String, vars::Vector{String})
     return lastSamp
 
 end
+
+function getCI(samps::AbstractArray, alpha::Number)
+
+    q1 = (1 - alpha)/2
+    q2 = 1 - q1
+
+    n = size(samps, 2)
+
+    CI = zeros(n, 2)
+
+    for i = 1:n
+        CI[i,:] = quantile(samps[:,i], [q1, q2])
+    end
+
+    return CI
+
+end

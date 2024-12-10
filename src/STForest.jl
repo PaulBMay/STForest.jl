@@ -143,6 +143,15 @@ export simulate_Continuous
 include("bernoulli_predict.jl")
 export bernoulli_predict
 
+########################
+
+include("continuous_predict.jl")
+export continuous_predict
+
+########################
+
+include("agg_predict.jl")
+export agg_predict
 
 
 

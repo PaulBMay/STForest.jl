@@ -22,8 +22,8 @@ function simulate_Continuous(loc::Matrix, time::Matrix, nKnots::Int, params::Nam
 
     if nUnq < n
 
-        local timeStep = (maximum(time) - minimum(time)) / (nKnots - 1)
-        local timeKnots = reshape( collect( minimum(time):timeStep:maximum(time) ), :, 1 )
+        #local timeStep = (maximum(time) - minimum(time)) / (nKnots - 1)
+        local timeKnots = reshape( collect( range(minimum(time), maximum(time), length = nKnots) ), :, 1 )
 
         local Q2 = expCor(timeKnots, timeKnots, params.rangeT2)
         local w2 = vec( cholesky(Q2).U \ randn(nKnots, nUnq))

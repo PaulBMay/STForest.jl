@@ -8,8 +8,11 @@ using Distributions
 
 #
 
-n = 20000
+n = 1000
 nUnq = Integer(floor(n / 4))
+
+nPred = 1000
+nPredUnq = Integer(floor(nPred / 4))
 
 Random.seed!(96)
 
@@ -17,21 +20,34 @@ locUnq = rand(nUnq, 2)
 loc = locUnq[sample(1:nUnq, n), :]
 time = rand(n,1)
 
+locPredUnq = rand(nPredUnq, 2)
+locPred = locPredUnq[sample(1:nPredUnq, nPred), :]
+timePred = rand(nPred, 1)
+
+locFull = vcat(loc, locPred)
+timeFull = vcat(time, timePred)
 #
 
-posparams = (beta = 5, sw1 = 1, rangeS1 = 0.2, rangeT1 = 1, sw2 = 2, rangeT2 = 0.5, tSq = 0.01)
+posparams = (beta = 5, sw1 = 2, rangeS1 = 0.2, rangeT1 = 1, sw2 = 1, rangeT2 = 0.5, tSq = 0.01)
 zparams = (beta = 2, sw = 4, rangeS = 0.3, rangeT = 2)
 
 m = 25
 
 #
 
-z, zmu = simulate_Bernoulli(loc, time, zparams, m)
+zFull, zFullmu = simulate_Bernoulli(locFull, timeFull, zparams, m)
 
 nKnots = 10
-ypos = simulate_Continuous(loc, time, nKnots, posparams, m)
 
-y = ypos .* z
+
+yposFull = simulate_Continuous(locFull, timeFull, nKnots, posparams, m)
+
+yFull = yposFull .* zFull
+
+y = yFull[1:n]
+ypos = yposFull[1:n]
+z = zFull[1:n]
+zmu = zFullmu[1:n]
 
 X = ones(n, 1)
 
@@ -55,23 +71,23 @@ priors_z = (theta0 = [1, 0.1, 1], alpha0 = [0.5, 0.5, 0.5], beta = [2 20])
 timeKnots = reshape( collect(0:0.1:1), :, 1)
 
 
-posmap, posmaplog = NNGP_Continuous_MAP(posdata, m, timeKnots, posparams, spriors_pos; f_tol = 1e-6)
+posmap, posmaplog = NNGP_Continuous_MAP(posdata, m, timeKnots, posparams, priors_pos; f_tol = 1e-6)
 
 thetaVar_pos = 1e-5*Matrix(I, 6, 6)
 
-nSampsBurn = 1000
+nSampsBurn = 500
 
-NNGP_Continuous_MCMC(posdata, m, timeKnots, posmap, spriors_pos, thetaVar_pos, outDir, nSampsBurn)
+NNGP_Continuous_MCMC(posdata, m, timeKnots, posmap, priors_pos, thetaVar_pos, outDir, nSampsBurn)
 
 
 thetaVar_pos = getPropVars("./test/dump/yparams.csv", ["sw1", "rangeS1", "rangeT1", "sw2", "rangeT2", "tSq"], nSampsBurn)
 
-nSamps = 5000
+nSamps = 1000
 
-NNGP_Continuous_MCMC(posdata, m, timeKnots, posmap, spriors_pos, thetaVar_pos, outDir, nSamps)
+NNGP_Continuous_MCMC(posdata, m, timeKnots, posmap, priors_pos, thetaVar_pos, outDir, nSamps)
 
 
-#= pardf_pos = CSV.read("./test/dump/yparams.csv", DataFrame)
+pardf_pos = CSV.read("./test/dump/yparams.csv", DataFrame)
 
 plot(pardf_pos.sw1)
 plot(pardf_pos.rangeS1)
@@ -79,17 +95,15 @@ plot(pardf_pos.rangeT1)
 plot(pardf_pos.sw2)
 plot(pardf_pos.rangeT2)
 plot(pardf_pos.tSq)
-=#
+plot(pardf_pos.beta_0)
+
 
 #
 
 thetaVar_z = 1e-3*Matrix(I,3,3)
 
-NNGP_Bernoulli(zdata, m, zparams, priors_z, outDir, 10, adaptStart = 50, thetalog = true)
 NNGP_Bernoulli(zdata, m, zparams, priors_z, outDir, nSampsBurn, adaptStart = 50, thetalog = true)
 
-NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, 10, adaptStart = 50, thetalog = true)
-NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, nSampsBurn, adaptStart = 50, its_reltol = 1e-6, thetalog = true)
 
 
 thetaVar_z = getPropVars("./test/dump/zparams.csv", ["sw", "rangeS", "rangeT"], nSampsBurn)
@@ -103,9 +117,44 @@ plot(pardf_z.rangeS)
 plot(pardf_z.rangeT)
 plot(pardf_z.beta_0)
 
+
+Xpred = ones(nPred, 1)
+
+zsamps = bernoulli_predict(outDir, Xpred, locPred, timePred, m)
+
+zPredmu = zFullmu[(n+1):(n+nPred)]
+
+scatter(mean(zsamps, dims = 1)[1,:], zPredmu)
+
+ysamps = continuous_predict(outDir, Xpred, locPred, timePred, m)
+
+
+yposPred = yposFull[(n+1):(n+nPred)]
+
+
+scatter(mean(ysamps, dims = 1)[1,:], yposPred)
+
+
+function getCI(samps::AbstractArray, alpha::Number)
+
+    q1 = (1 - alpha)/2
+    q2 = 1 - q1
+
+    n = size(samps, 2)
+
+    CI = zeros(n, 2)
+
+    for i = 1:n
+        CI[i,:] = quantile(samps[:,i], [q1, q2])
+    end
+
+    return CI
+
+end
+
+yCI = getCI(ysamps, 0.95)
+
+mean((yCI[:,1] .< yposPred) .&& (yCI[:,2] .> yposPred))
+
+
 rm(outDir, recursive = true)
-
-
-@profview NNGP_Bernoulli_ITS(zdata, m, zparams, priors_z, outDir, 50, adaptStart = 50, its_reltol = 1e-6, thetalog = true)
-
-

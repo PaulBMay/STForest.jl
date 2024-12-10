@@ -350,7 +350,7 @@ function getNeighborsP(loc, locPred, m)
 
 end
 
-function getNNGPmatsSTP(nb::Matrix{Int64}, loc::Matrix{Float64}, time::Matrix{Float64}, locp::Matrix{Float64}, timep::Matrix{Float64}, rho_s::Number, rho_t::Number)
+function getNNGPmatsSTP(nb::Matrix{Int64}, loc::AbstractArray{Float64}, time::AbstractArray{Float64}, locp::Matrix{Float64}, timep::Matrix{Float64}, rho_s::Number, rho_t::Number)
 
     local n = size(loc,1)
     local np = size(locp, 1)
@@ -398,7 +398,7 @@ function getNNGPmatsSTP(nb::Matrix{Int64}, loc::Matrix{Float64}, time::Matrix{Fl
 
 end
 
-function getNNGPmatsSTP!(B::SparseMatrixCSC, Fvals::Vector{Float64}, Border::Vector{Int64}, nb::Matrix{Int64}, loc::Matrix{Float64}, time::Matrix{Float64}, locp::Matrix{Float64}, timep::Matrix{Float64}, rho_s::Number, rho_t::Number)
+function getNNGPmatsSTP!(B::SparseMatrixCSC, Fvals::Vector{Float64}, Border::Vector{Int64}, nb::Matrix{Int64}, loc::AbstractArray{Float64}, time::AbstractArray{Float64}, locp::Matrix{Float64}, timep::Matrix{Float64}, rho_s::Number, rho_t::Number)
 
     local n = size(loc,1)
     local np = size(locp, 1)
