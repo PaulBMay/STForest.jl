@@ -37,7 +37,7 @@ function cvsplit(data::InputData, testprop::Real)
     local locunq = unique(data.loc, dims = 1)
     nunq = size(locunq, 1)
     local map2unq = indexin(data.loc, locunq)
-    ntestunq = Integer(floor(testprop*unq))
+    ntestunq = Integer(floor(testprop*nunq))
     testindunq = sample(1:nunq, ntestunq)
 
     testind = map2unq .∈ [testindunq]
