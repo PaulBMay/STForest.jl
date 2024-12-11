@@ -54,6 +54,7 @@ export quiltplot
 export datasplit
 export getPropVars
 export getLastSamp
+export getCI
 
 #######################
 
