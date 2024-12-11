@@ -55,6 +55,7 @@ export datasplit
 export getPropVars
 export getLastSamp
 export getCI
+export cvsplit
 
 #######################
 

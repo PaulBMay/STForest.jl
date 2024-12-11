@@ -31,6 +31,26 @@ function datasplit(data::InputData)
 
 end
 
+
+function cvsplit(data::InputData, testprop::Real)
+
+    local locunq = unique(data.loc, dims = 1)
+    nunq = size(locunq, 1)
+    local map2unq = indexin(data.loc, locunq)
+    ntestunq = Integer(floor(testprop*unq))
+    testindunq = sample(1:nunq, ntestunq)
+
+    testind = map2unq .∈ [testindunq]
+
+    testdata = InputData(data.y[testind], data.X[testind,:], data.loc[testind,:], data.time[testind,:])
+    traindata = InputData(data.y[.!testind], data.X[.!testind,:], data.loc[.!testind,:], data.time[.!testind,:])
+
+    return traindata, testdata
+
+
+end
+
+
 function getPropVars(path::String, vars::Vector{String}, nUse::Integer)
 
     p = CSV.read(path, DataFrame)
