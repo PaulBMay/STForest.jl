@@ -1,5 +1,5 @@
 
-function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, priors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64; thetalog = false)
+function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, priors::NamedTuple, thetaVar::Matrix, outDir::String, nSamps::Int64; pgwarmup = 10, thetalog = false)
 
     ###################
     # Check to see if the Tuples have the required fields
@@ -112,6 +112,33 @@ function NNGP_Bernoulli(data::InputData, m::Int64, initparams::NamedTuple, prior
     acceptTheta = 0
 
     prop_chol = cholesky(thetaVar).L
+
+    #####################
+    # pg warmup
+    #####################
+
+    println("Warming up Polya-Gamma and random effect values")
+
+    Qprior = blockdiag(
+        spdiagm(betaPrec),
+        (1/sw^2)*B'*spdiagm(1 ./ F)*B
+    )
+
+    for i = 1:pgwarmup
+
+       Q .= Qprior + Dsgn'*spdiagm(pg)*Dsgn
+
+       effects .= getGaussSamp!(Qc, Q, zProj)
+
+       #######################
+       # Sample pg
+       #######################
+
+       pg .= rpg.(Dsgn*effects)
+
+    end
+
+    Qprior = []
 
     #########################
     # Begin Gibbs sampler
