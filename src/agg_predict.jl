@@ -82,9 +82,9 @@ function agg_predict(read_dir, XPred, locPred, timePred, pwr, m, Projection)
     if multTimes
         map2unq = indexin(loc2str(locPred), loc2str(locPredUnq))
         BtRows, BtCols, BtOrder = getBtNZ(nPred, map2unq, nKnots)
-        BtCompact = expCor(timePred, timeKnots, yparams.rangeT2[1])
+        BtCompact = expCor(timePred, timeknots, yparams.rangeT2[1])
         Bt = sparse(BtRows, BtCols, view(vec(BtCompact'), BtOrder))
-        Qt = expCor(timeKnots, yparams.rangeT2[1])
+        Qt = expCor(timeknots, yparams.rangeT2[1])
 
     end
 
@@ -122,8 +122,8 @@ function agg_predict(read_dir, XPred, locPred, timePred, pwr, m, Projection)
 
         if multTimes
 
-            expCor!(Qt, timeKnots, yparams.rangeT2[i])
-            expCor!(BtCompact, timePred, timeKnots, yparams.rangeT2[i])
+            expCor!(Qt, timeknots, yparams.rangeT2[i])
+            expCor!(BtCompact, timePred, timeknots, yparams.rangeT2[i])
             Bt.nzval .= view(vec(BtCompact'), BtOrder)
             wy2 = vec( cholesky(Qt).U \ randn(nKnots, nPredUnq))
 
