@@ -155,6 +155,12 @@ export continuous_predict
 include("agg_predict.jl")
 export agg_predict
 
+include("variogram.jl")
+
+export STcovariogramTheory
+export STvariogram
+export STvariogramTheory
+
 
 
 end
