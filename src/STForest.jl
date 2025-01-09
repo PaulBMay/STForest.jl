@@ -155,11 +155,20 @@ export continuous_predict
 include("agg_predict.jl")
 export agg_predict
 
+###################
+
 include("variogram.jl")
 
 export STcovariogramTheory
 export STvariogram
 export STvariogramTheory
+
+
+######################
+
+include("separable_map.jl")
+
+export separable_map
 
 
 
