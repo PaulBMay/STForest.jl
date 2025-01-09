@@ -26,7 +26,7 @@ function thetayNLP_sep(thetay::Vector, spriors::NamedTuple, data::InputData, bet
 
     local nll = 0.5*(sse + ldet)
 
-    local prior1 = pcpriorST([sw, rangeS, rangeT], spriors.theta10, spriors.alpha10)
+    local prior1 = pcpriorST([sw, rangeS, rangeT], spriors.theta0, spriors.alpha0)
 
     local nlp = nll - prior1 - prior2
 
