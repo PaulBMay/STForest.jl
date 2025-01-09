@@ -64,7 +64,6 @@ function separable_map(data::InputData, m::Integer, initparams::NamedTuple, spri
 
     n = size(data.y, 1) # sample size
     p = size(data.X, 2) # num predictors
-    nKnots = size(timeKnots, 1)
 
     ##########################################################
     # I am making the forest/non-forest discrims time static.
