@@ -170,6 +170,12 @@ include("separable_map.jl")
 
 export separable_map
 
+######################
+
+include("separable_mcmc.jl")
+
+export separable_mcmc
+
 
 
 end
