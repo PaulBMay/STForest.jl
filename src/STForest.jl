@@ -176,6 +176,12 @@ include("separable_mcmc.jl")
 
 export separable_mcmc
 
+######################
+
+include("separable_predict.jl")
+
+export separable_predict
+
 
 
 end
