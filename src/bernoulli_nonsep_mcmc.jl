@@ -89,7 +89,7 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
 
     print("Initial NNGP mats\n")
 
-    B1,F1,B1Order = getNNGPmatsST(nb, data.loc, data.time, rangeS, rangeT)
+    B1,F1,B1Order = getNNGPmatsST(nb, data.loc, data.time, rangeS1, rangeT1)
     B1p,F1p = copy(B1), copy(F1)
 
     B2Rows, B2Cols, B2Order = getBtNZ(n, map2unq, nKnots)
