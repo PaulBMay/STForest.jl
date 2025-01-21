@@ -105,7 +105,7 @@ function bernoulli_nonsep_map(initparams::NamedTuple, data::InputData, timeknots
     nunq = size(locunq, 1)
     local  map2unq = indexin(loc2str(data.loc), loc2str(locunq))
 
-    theta = exp.(collect(initparams))
+    local theta = log.(collect(initparams))
 
     
     thetaMin = optimize(t -> thetaz_nonsep_nlp(t, data, timeknots, nunq, map2unq, priors, nb, nr_tol, nr_maxiter), 
