@@ -73,7 +73,7 @@ function thetaz_nonsep_nlp(theta::Vector, data::InputData, timeknots::AbstractAr
 
     effects[1:p] -= priors.beta[:,1]
 
-    llw = -0.5*(effects'*Q*effects + sum(log.(F)) + 2*n*log(sw1) - 2*kt*log(sw2) - nunq*logdet(Qt) - sum(log.(priors.beta[:,2])) + neffects*log(2*pi))
+    llw = -0.5*(effects'*Q*effects + sum(log.(F1)) + 2*n*log(sw1) - 2*kt*log(sw2) - nunq*logdet(Q2) - sum(log.(priors.beta[:,2])) + neffects*log(2*pi))
 
     # p(w | y, θ)
 
