@@ -55,7 +55,7 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
 
     paramsOut = joinpath(outDir, "zparams.csv")
     paramsDf = DataFrame(zeros(1, p + 5), 
-        ["beta_".*string.(0:(p-1)); ["sw1", "rangeS1", "rangeT1. sw2, rangeT2"]]
+        ["beta_".*string.(0:(p-1)); ["sw1", "rangeS1", "rangeT1", "sw2", "rangeT2"]]
         )
 
     wOut = joinpath(outDir, "wz.csv")
