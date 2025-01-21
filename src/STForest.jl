@@ -189,6 +189,11 @@ include("bernoulli_nonsep_map.jl")
 
 export bernoulli_nonsep_map
 
+######################
+
+include("bernoulli_nonsep_mcmc.jl")
+
+export bernoulli_nonsep_mcmc
 
 
 
