@@ -104,7 +104,7 @@ function bernoulli_nonsep_map(initparams::NamedTuple, data::InputData, timeknots
 
     local locunq = unique(data.loc, dims = 1)
     nunq = size(locunq, 1)
-    local  map2unq = indexin(loc2str(data.loc), loc2str(locUnq))
+    local  map2unq = indexin(loc2str(data.loc), loc2str(locunq))
 
     theta = exp.(collect(initparams))
 
