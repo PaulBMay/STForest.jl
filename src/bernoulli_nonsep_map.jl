@@ -1,11 +1,10 @@
 
 
-function thetaz_nonsep_nlp(theta::Vector, data::InputData, timeknots::AbstractArray, nunq::AbstractArray, map2unq::AbstractVector, priors::NamedTuple, nb::Matrix{Int64}, tol::Float64, maxiter::Int64)
+function thetaz_nonsep_nlp(theta::Vector, data::InputData, timeknots::AbstractArray, nunq::Integer, map2unq::AbstractVector, priors::NamedTuple, nb::Matrix{Int64}, tol::Float64, maxiter::Int64)
 
     n = length(data.y)
     p = size(data.X, 2)
     nknots = size(timeknots, 1)
-    nunq = size(locunq,1)
     kt = nunq*nknots
 
     sw1,rangeS1,rangeT1, sw2, rangeT2 = exp.(theta)
