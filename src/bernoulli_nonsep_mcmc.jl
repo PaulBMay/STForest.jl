@@ -257,7 +257,7 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
             theta2mat[i+1,:] = copy(propTheta2)
             Q2 .= copy(Q2p)
             B2.nzval .= copy(B2p.nzval)
-            Dsgn.nzval .= copy(Dsgnp.nzval)
+            Dsgn .= copy(Dsgnp)
 
        else
             theta2mat[i+1,:] = copy(currentTheta2)
