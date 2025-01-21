@@ -183,5 +183,13 @@ include("separable_predict.jl")
 export separable_predict
 
 
+######################
+
+include("bernoulli_nonsep_map.jl")
+
+export bernoulli_nonsep_map
+
+
+
 
 end
