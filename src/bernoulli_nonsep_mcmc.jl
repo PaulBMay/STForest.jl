@@ -96,7 +96,7 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
     B2Compact = expCor(data.time, timeKnots, rangeT2)
     B2 = sparse(B2Rows, B2Cols, view(vec(B2Compact'), B2Order))
     Q2 = expCor(timeKnots, rangeT2)
-    B2p, Q2p = copy(B2), copy(Q2)
+    B2pCompact, B2p, Q2p = copy(B2Compact), copy(B2), copy(Q2)
 
     Dsgn = sparse_hcat(data.X, (sw2^2)*B2, speye(n))
     Dsgnp = copy(Dsgn)
@@ -160,6 +160,13 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
 
     Qprior = []
 
+    ####
+    # fitted probs
+    ####
+
+    println("Fitting probs")
+    probs = softmax.(Dsgn*effects)
+    probsp = copy(probs)
 
     #########################
     # Begin Gibbs sampler
@@ -234,15 +241,18 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
        sw2p, rangeT2p = exp.(propTheta2)
 
        expCor!(Q2p, timeKnots, rangeT2p)
-       expCor!(B2Compact, data.time, timeKnots, rangeT2p)
-       B2p.nzval .= view(vec(B2Compact'), B2Order)
+       expCor!(B2pCompact, data.time, timeKnots, rangeT2p)
+       B2p.nzval .= view(vec(B2pCompact'), B2Order)
        Dsgnp .= sparse_hcat(data.X, sw2p^2*B2p, speye(n))
 
        w2mat = reshape(w2, nKnots, nUnq)
        w2cross = w2mat*w2mat'
 
-       llProp = -0.5*( (sw2p^2)*tr(w2cross*Q2p) - 2*kt*log(sw2p) - nUnq*logdet(Q2p) )
-       ll = -0.5*( (sw2^2)*tr(w2cross*Q2) - 2*kt*log(sw2) - nUnq*logdet(Q2) )
+       probs .= softmax.(Dsgn*effects)
+       probsp .= softmax.(Dsgnp*effects)
+
+       llProp = -0.5*( (sw2p^2)*tr(w2cross*Q2p) - 2*kt*log(sw2p) - nUnq*logdet(Q2p) ) + sum(log.(probsp[pos])) + sum(log.(1 .- probsp[.!pos]))
+       ll = -0.5*( (sw2^2)*tr(w2cross*Q2) - 2*kt*log(sw2) - nUnq*logdet(Q2) ) + sum(log.(probs[pos])) + sum(log.(1 .- probs[.!pos]))
 
        priorProp = pcprior([sw2p, rangeT2p], priors.theta20, priors.alpha20)
        prior = pcprior([sw2, rangeT2], priors.theta20, priors.alpha20)
@@ -256,8 +266,10 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
             sw2, rangeT2 = sw2p, rangeT2p
             theta2mat[i+1,:] = copy(propTheta2)
             Q2 .= copy(Q2p)
+            B2Compact .= copy(B2pCompact)
             B2.nzval .= copy(B2p.nzval)
             Dsgn .= copy(Dsgnp)
+            zProj .= Dsgn'*(data.y .- 0.5)
 
        else
             theta2mat[i+1,:] = copy(currentTheta2)
