@@ -270,7 +270,7 @@ function bernoulli_nonsep_mcmc(data::InputData, m::Int64, timeKnots::AbstractArr
             B2.nzval .= copy(B2p.nzval)
             Dsgn .= copy(Dsgnp)
             zProj .= Dsgn'*(data.y .- 0.5)
-
+            zProj[1:p] += betaPrec .* betaMu
        else
             theta2mat[i+1,:] = copy(currentTheta2)
        end
