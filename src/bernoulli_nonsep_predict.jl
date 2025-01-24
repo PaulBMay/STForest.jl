@@ -43,7 +43,7 @@ function bernoulli_nonsep_predict(readdir, Xpred, locpred, timepred, m)
 
         getNNGPmatsSTP!(B, F, BOrder, nb, loc, time, locpred, timepred, rangeS1[i], rangeT1[i])
 
-        mu = softmax.(Xpred*beta[i,:] + B*w[i,:] + sw1[i]*sqrt.(F).*randn(npred) + sw2*randn(npred))
+        mu = softmax.(Xpred*beta[i,:] + B*w[i,:] + sw1[i]*sqrt.(F).*randn(npred) + sw2[i]*randn(npred))
 
         predSamps[i,:] = mu
 
