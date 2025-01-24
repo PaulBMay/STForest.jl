@@ -195,6 +195,12 @@ include("bernoulli_nonsep_mcmc.jl")
 
 export bernoulli_nonsep_mcmc
 
+######################
+
+include("bernoulli_nonsep_predict.jl")
+
+export bernoulli_nonsep_predict
+
 
 
 end
