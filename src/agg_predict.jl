@@ -292,7 +292,7 @@ function agg_predict(readdir_z, readdir_y, XPred, locPred, timePred, pwr, m, Pro
 
         end
 
-        yp = ratpwr.(ypt, pwr)
+        yp = ratpwr.(gy, pwr)
         z = 1 .* (softmax.(gz) .> rand(nPred))
 
         # Combine, project, and update mean and variance
