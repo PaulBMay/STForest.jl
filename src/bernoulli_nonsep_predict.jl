@@ -40,7 +40,7 @@ function bernoulli_nonsep_predict(readdir, Xpred, locpred, timepred, timeknots, 
     locpredunq = unique(locpred, dims = 1)
     npredunq = size(locpredunq, 1)
 
-    multTimes = nPredUnq < npred
+    multTimes = npredunq < npred
 
 
     if multTimes
